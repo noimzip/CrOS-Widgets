@@ -58,23 +58,10 @@
 }
 
 .github-settings-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  --m3e-icon-button-size: 32px;
+  --m3e-icon-button-color: #ffffff;
   color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast);
-  touch-action: manipulation;
-  user-select: none;
-}
-
-.github-settings-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  margin-left: 2px;
 }
 
 .github-contribution-content {
@@ -99,17 +86,12 @@
   align-items: center;
   justify-content: center;
   color: var(--on-surface-variant);
-  gap: 8px;
+  gap: 12px;
+  padding: 16px 0;
 }
 
-.github-loading m3e-icon {
-  font-size: 24px;
-  animation: spin 1.5s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.github-loading m3e-loading-indicator {
+  --m3e-loading-indicator-size: 32px;
 }
 
 .github-day {

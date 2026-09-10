@@ -44,23 +44,9 @@
 }
 
 .google-calendar-settings-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  --m3e-icon-button-size: 32px;
+  --m3e-icon-button-color: #ffffff;
   color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast);
-  touch-action: manipulation;
-  user-select: none;
-}
-
-.google-calendar-settings-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
 }
 
 .google-calendar-content {

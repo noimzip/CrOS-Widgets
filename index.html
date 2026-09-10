@@ -19,7 +19,20 @@
     <script src="./i18n.js" defer></script>
     <script src="./desktop.js" defer></script>
 
+    <script type="importmap">
+    {
+      "imports": {
+        "@m3e/web/icon": "./node_modules/@m3e/web/dist/all.min.js",
+        "@m3e/web": "./node_modules/@m3e/web/dist/all.min.js",
+        "@m3e/icons/outlined/": "./node_modules/@m3e/icons/dist/outlined/",
+        "@m3e/icons/rounded/": "./node_modules/@m3e/icons/dist/rounded/",
+        "@m3e/icons/sharp/": "./node_modules/@m3e/icons/dist/sharp/",
+        "@m3e/icons/": "./node_modules/@m3e/icons/dist/"
+      }
+    }
+    </script>
     <script type="module" src="./node_modules/@m3e/web/dist/all.min.js"></script>
+    <script type="module" src="./modules/icons.js"></script>
     
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0"
@@ -50,22 +63,51 @@
     <div id="add_app_type_modal_overlay" class="modal_overlay">
       <div id="add_app_type_modal" class="modal">
         <h3 data-i18n="select_app_type">追加するアプリの種類を選択</h3>
-        <m3e-button variant="filled" id="add_web_app_btn" data-i18n="web_app">Webアプリ / URL</m3e-button>
-        <m3e-button variant="filled" id="add_linux_app_btn" data-i18n="linux_app">Linuxアプリ</m3e-button>
-        <m3e-button variant="filled" id="add_file_btn" data-i18n="file_shortcut">ファイルのショートカット</m3e-button>
-        <m3e-button variant="filled" id="add_folder_btn" data-i18n="folder_shortcut">フォルダのショートカット</m3e-button>
-        <m3e-button variant="filled" id="close_add_app_type_modal" data-i18n="close">とじる</m3e-button>
+        <m3e-button variant="filled-tonal" id="add_web_app_btn" data-i18n="web_app">
+          <m3e-icon slot="icon" name="language"></m3e-icon>Webアプリ / URL
+        </m3e-button>
+        <m3e-button variant="filled-tonal" id="add_linux_app_btn" data-i18n="linux_app">
+          <m3e-icon slot="icon" name="terminal"></m3e-icon>Linuxアプリ
+        </m3e-button>
+        <m3e-button variant="filled-tonal" id="add_file_btn" data-i18n="file_shortcut">
+          <m3e-icon slot="icon" name="description"></m3e-icon>ファイルのショートカット
+        </m3e-button>
+        <m3e-button variant="filled-tonal" id="add_folder_btn" data-i18n="folder_shortcut">
+          <m3e-icon slot="icon" name="folder"></m3e-icon>フォルダのショートカット
+        </m3e-button>
+        <m3e-button variant="outlined" id="close_add_app_type_modal" data-i18n="close">とじる</m3e-button>
       </div>
     </div>
     
-    <!-- ウィジェット追加モーダル -->
-    <div id="add_widget_modal_overlay" class="modal_overlay">
-      <div id="add_widget_modal" class="modal">
-        <h3 data-i18n="add_widget">ウィジェットを追加</h3>
-        <div id="widget_list">
-          <!-- JSで動的に生成 -->
+    <!-- ウィジェット追加モーダル (Aluminium OS Widgets Style) -->
+    <div id="add_widget_modal_overlay" class="modal_overlay widget-picker-overlay">
+      <div id="add_widget_modal" class="widget-picker-modal">
+        <div class="widget-picker-header">
+          <h2 class="widget-picker-title" data-i18n="widgets_title">Widgets</h2>
+          <m3e-icon-button id="close_add_widget_modal" class="widget-picker-close-btn" variant="standard" title="Close" aria-label="Close">
+            <m3e-icon name="close"></m3e-icon>
+          </m3e-icon-button>
         </div>
-        <m3e-button variant="filled" id="close_add_widget_modal" data-i18n="close">とじる</m3e-button>
+        <div class="widget-picker-body">
+          <!-- Left Sidebar -->
+          <div class="widget-picker-sidebar">
+            <m3e-search-bar id="widget_picker_search_bar" class="widget-picker-search-bar" clearable>
+              <m3e-icon slot="leading" name="search"></m3e-icon>
+              <input slot="input" type="text" id="widget_picker_search" data-i18n="search_placeholder" placeholder="Search" />
+            </m3e-search-bar>
+            <div id="widget_picker_categories" class="widget-picker-categories">
+              <!-- Dynamically populated categories -->
+            </div>
+          </div>
+          <!-- Right Content Preview Panel -->
+          <div class="widget-picker-content">
+            <div class="widget-picker-preview-container">
+              <div id="widget_picker_preview_area" class="widget-picker-preview-area">
+                <!-- Preview cards of widgets -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -97,21 +139,21 @@
         <span id="media_time_total" class="media-time">0:00</span>
       </div>
       <div class="media-player-controls">
-        <button id="media_shuffle" class="media-btn media-btn-small" title="Shuffle">
+        <m3e-icon-button id="media_shuffle" class="media-btn media-btn-small" variant="standard" title="Shuffle">
           <m3e-icon name="shuffle"></m3e-icon>
-        </button>
-        <button id="media_prev" class="media-btn" title="Previous">
+        </m3e-icon-button>
+        <m3e-icon-button id="media_prev" class="media-btn" variant="standard" title="Previous">
           <m3e-icon name="skip_previous"></m3e-icon>
-        </button>
-        <button id="media_play_pause" class="media-btn media-btn-main" title="Play/Pause">
+        </m3e-icon-button>
+        <m3e-fab id="media_play_pause" class="media-btn media-btn-main" size="medium" variant="primary" title="Play/Pause">
           <m3e-icon name="play_arrow" id="media_play_icon"></m3e-icon>
-        </button>
-        <button id="media_next" class="media-btn" title="Next">
+        </m3e-fab>
+        <m3e-icon-button id="media_next" class="media-btn" variant="standard" title="Next">
           <m3e-icon name="skip_next"></m3e-icon>
-        </button>
-        <button id="media_repeat" class="media-btn media-btn-small" title="Repeat">
+        </m3e-icon-button>
+        <m3e-icon-button id="media_repeat" class="media-btn media-btn-small" variant="standard" title="Repeat">
           <m3e-icon name="repeat"></m3e-icon>
-        </button>
+        </m3e-icon-button>
       </div>
     </div>
 
@@ -121,17 +163,17 @@
         <m3e-icon name="code" class="github-icon"></m3e-icon>
         <span class="github-title">GitHub Contributions</span>
         <m3e-select id="github_year_select" class="github-year-select" style="display: none;"></m3e-select>
-        <button id="github_refresh_btn" class="github-settings-btn" title="更新" style="margin-right: 4px;">
+        <m3e-icon-button id="github_refresh_btn" class="github-settings-btn" variant="standard" title="更新" style="margin-right: 4px;">
           <m3e-icon name="refresh"></m3e-icon>
-        </button>
-        <button id="github_settings_btn" class="github-settings-btn" title="設定">
+        </m3e-icon-button>
+        <m3e-icon-button id="github_settings_btn" class="github-settings-btn" variant="standard" title="設定">
           <m3e-icon name="settings"></m3e-icon>
-        </button>
+        </m3e-icon-button>
       </div>
       <div class="github-contribution-content">
         <div id="github_contribution_graph" class="github-graph">
           <div class="github-loading">
-            <m3e-icon name="hourglass_empty"></m3e-icon>
+            <m3e-loading-indicator></m3e-loading-indicator>
             <span data-i18n="loading">読み込み中...</span>
           </div>
         </div>
@@ -207,12 +249,12 @@
       <div class="google-calendar-header">
         <m3e-icon name="calendar_month" class="google-calendar-icon"></m3e-icon>
         <span class="google-calendar-title">Google Calendar</span>
-        <button id="google_calendar_refresh_btn" class="google-calendar-settings-btn" title="更新" style="margin-right: 4px;">
+        <m3e-icon-button id="google_calendar_refresh_btn" class="google-calendar-settings-btn" variant="standard" title="更新" style="margin-right: 4px;">
           <m3e-icon name="refresh"></m3e-icon>
-        </button>
-        <button id="google_calendar_settings_btn" class="google-calendar-settings-btn" title="設定">
+        </m3e-icon-button>
+        <m3e-icon-button id="google_calendar_settings_btn" class="google-calendar-settings-btn" variant="standard" title="設定">
           <m3e-icon name="settings"></m3e-icon>
-        </button>
+        </m3e-icon-button>
       </div>
       <div class="google-calendar-content">
         <iframe id="google_calendar_iframe" src="about:blank"></iframe>
@@ -270,16 +312,16 @@
       <div class="gmail-header">
         <m3e-icon name="mail" class="gmail-icon"></m3e-icon>
         <span class="gmail-title">Gmail</span>
-        <button id="gmail_refresh_btn" class="gmail-settings-btn" data-i18n-title="refresh" title="更新" style="margin-right: 4px;">
+        <m3e-icon-button id="gmail_refresh_btn" class="gmail-settings-btn" variant="standard" data-i18n-title="refresh" title="更新" style="margin-right: 4px;">
           <m3e-icon name="refresh"></m3e-icon>
-        </button>
-        <button id="gmail_settings_btn" class="gmail-settings-btn" data-i18n-title="settings" title="設定">
+        </m3e-icon-button>
+        <m3e-icon-button id="gmail_settings_btn" class="gmail-settings-btn" variant="standard" data-i18n-title="settings" title="設定">
           <m3e-icon name="settings"></m3e-icon>
-        </button>
+        </m3e-icon-button>
       </div>
       <div id="gmail_content" class="gmail-content">
         <div class="gmail-loading">
-          <m3e-icon name="hourglass_empty"></m3e-icon>
+          <m3e-loading-indicator></m3e-loading-indicator>
           <span data-i18n="loading">読み込み中...</span>
         </div>
       </div>
@@ -343,9 +385,9 @@
     </div>
 
     <!-- 右下の設定ボタン -->
-    <button id="settings_fab" title="設定">
-      <m3e-icon name="settings"></m3e-icon>
-    </button>
+    <m3e-fab id="settings_fab" size="large" variant="surface" title="設定" aria-label="設定">
+      <m3e-icon slot="icon" name="settings"></m3e-icon>
+    </m3e-fab>
 
     <div id="add_newapp_modal_overlay" class="modal_overlay">
       <div id="add_newapp_modal" class="modal">
@@ -523,7 +565,9 @@
               <span data-i18n="latitude">緯度</span>
             </div>
             <div class="settings-item-control">
-              <input type="number" id="weather_lat_input" step="0.0001" style="width: 100px;">
+              <m3e-form-field variant="outlined" style="width: 120px;">
+                <input type="number" id="weather_lat_input" step="0.0001">
+              </m3e-form-field>
             </div>
           </div>
           <div class="settings-item">
@@ -531,7 +575,9 @@
               <span data-i18n="longitude">経度</span>
             </div>
             <div class="settings-item-control">
-              <input type="number" id="weather_lon_input" step="0.0001" style="width: 100px;">
+              <m3e-form-field variant="outlined" style="width: 120px;">
+                <input type="number" id="weather_lon_input" step="0.0001">
+              </m3e-form-field>
             </div>
           </div>
           <div class="settings-item">
@@ -739,9 +785,10 @@
     <!-- Spotlight Search Overlay -->
     <div id="spotlight_overlay" class="spotlight-hidden">
       <div id="spotlight_modal">
-        <div id="spotlight_search_bar">
-          <m3e-icon name="search" id="spotlight_search_icon"></m3e-icon>
+        <m3e-search-bar id="spotlight_search_bar" clearable>
+          <m3e-icon slot="leading" name="search" id="spotlight_search_icon"></m3e-icon>
           <input
+            slot="input"
             type="text"
             id="spotlight_input"
             data-i18n="spotlight_placeholder"
@@ -749,10 +796,10 @@
             autocomplete="off"
             spellcheck="false"
           />
-          <m3e-icon-button id="spotlight_close_btn" aria-label="Close">
+          <m3e-icon-button slot="trailing" id="spotlight_close_btn" aria-label="Close">
             <m3e-icon name="close"></m3e-icon>
           </m3e-icon-button>
-        </div>
+        </m3e-search-bar>
         <div id="spotlight_results">
           <div class="spotlight-category" id="spotlight_cat_apps">
             <div class="spotlight-category-label" data-i18n="spotlight_cat_apps">アプリ</div>
@@ -825,352 +872,381 @@
         <div id="settings_content">
           <div class="settings-section" data-section="design_style">
             <h4 class="settings-section-title" data-i18n="design_style">デザインとスタイル</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="language">言語</span>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="language">言語</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="language_selector">
+                    <m3e-option value="ja">日本語</m3e-option>
+                    <m3e-option value="en">English</m3e-option>
+                  </m3e-select>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-select id="language_selector">
-                  <m3e-option value="ja">日本語</m3e-option>
-                  <m3e-option value="en">English</m3e-option>
-                </m3e-select>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="color_scheme">カラースキーム</span>
+                </div>
+                <div class="settings-item-control">
+                  <div id="color_palette" class="color-palette">
+                    <button class="color-swatch" data-color="blue" style="background: #4285f4;" title="Blue"></button>
+                    <button class="color-swatch" data-color="red" style="background: #ea4335;" title="Red"></button>
+                    <button class="color-swatch" data-color="green" style="background: #34a853;" title="Green"></button>
+                    <button class="color-swatch" data-color="purple" style="background: #9334e6;" title="Purple"></button>
+                    <button class="color-swatch" data-color="orange" style="background: #fa7b17;" title="Orange"></button>
+                    <button class="color-swatch" data-color="teal" style="background: #14b8a6;" title="Teal"></button>
+                    <button class="color-swatch" data-color="pink" style="background: #ec4899;" title="Pink"></button>
+                    <label class="color-swatch color-picker-swatch" title="Custom">
+                      <input type="color" id="custom_color_picker" value="#4285f4">
+                      <m3e-icon name="colorize" style="font-size: 20px; color: white;"></m3e-icon>
+                    </label>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="color_scheme">カラースキーム</span>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="extract_color_from_image">画像から抽出</span>
+                </div>
+                <div class="settings-item-control">
+                  <input type="file" id="color_scheme_image_input" accept="image/*" style="display: none;">
+                  <m3e-button variant="outlined" id="extract_color_btn" data-i18n="upload_image_generic">画像をアップロード</m3e-button>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <div id="color_palette" class="color-palette">
-                  <button class="color-swatch" data-color="blue" style="background: #4285f4;" title="Blue"></button>
-                  <button class="color-swatch" data-color="red" style="background: #ea4335;" title="Red"></button>
-                  <button class="color-swatch" data-color="green" style="background: #34a853;" title="Green"></button>
-                  <button class="color-swatch" data-color="purple" style="background: #9334e6;" title="Purple"></button>
-                  <button class="color-swatch" data-color="orange" style="background: #fa7b17;" title="Orange"></button>
-                  <button class="color-swatch" data-color="teal" style="background: #14b8a6;" title="Teal"></button>
-                  <button class="color-swatch" data-color="pink" style="background: #ec4899;" title="Pink"></button>
-                  <label class="color-swatch color-picker-swatch" title="Custom">
-                    <input type="color" id="custom_color_picker" value="#4285f4">
-                    <m3e-icon name="colorize" style="font-size: 20px; color: white;"></m3e-icon>
-                  </label>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="theme">テーマ</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="dark_mode_selector">
+                    <m3e-option value="system" data-i18n="system_default">システム設定に従う</m3e-option>
+                    <m3e-option value="light" data-i18n="light_mode">ライトモード</m3e-option>
+                    <m3e-option value="dark" data-i18n="dark_mode">ダークモード</m3e-option>
+                  </m3e-select>
                 </div>
               </div>
             </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="extract_color_from_image">画像から抽出</span>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="blur_effect">ブラー効果</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-switch id="toggle_blur_effect"></m3e-switch>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <input type="file" id="color_scheme_image_input" accept="image/*" style="display: none;">
-                <m3e-button variant="outlined" id="extract_color_btn" data-i18n="upload_image_generic">画像をアップロード</m3e-button>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="theme">テーマ</span>
-              </div>
-              <div class="settings-item-control">
-                <m3e-select id="dark_mode_selector">
-                  <m3e-option value="system" data-i18n="system_default">システム設定に従う</m3e-option>
-                  <m3e-option value="light" data-i18n="light_mode">ライトモード</m3e-option>
-                  <m3e-option value="dark" data-i18n="dark_mode">ダークモード</m3e-option>
-                </m3e-select>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="blur_effect">ブラー効果</span>
-              </div>
-              <div class="settings-item-control">
-                <m3e-switch id="toggle_blur_effect"></m3e-switch>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="disable_animations">アニメーション効果を無効化</span>
-                <small data-i18n="disable_animations_desc">ウィンドウやアイコン、時計などの動きをなくし、動作を軽量化します</small>
-              </div>
-              <div class="settings-item-control">
-                <m3e-switch id="toggle_disable_animations"></m3e-switch>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="disable_animations">アニメーション効果を無効化</span>
+                  <small data-i18n="disable_animations_desc">ウィンドウやアイコン、時計などの動きをなくし、動作を軽量化します</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-switch id="toggle_disable_animations"></m3e-switch>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="icon_settings">
             <h4 class="settings-section-title" data-i18n="icon_settings">アイコン設定</h4>
-            <div class="settings-item settings-item-column">
-              <div class="settings-item-label">
-                <span data-i18n="icon_shape">アイコンの形</span>
-              </div>
-              <div class="settings-item-control">
-                <div id="icon_shape_buttons"></div>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="show_default_icons">デフォルトアイコンの表示</span>
+            <div class="settings-group-card">
+              <div class="settings-item settings-item-column">
+                <div class="settings-item-label">
+                  <span data-i18n="icon_shape">アイコンの形</span>
+                </div>
+                <div class="settings-item-control">
+                  <div id="icon_shape_buttons"></div>
+                </div>
               </div>
             </div>
-            <div class="settings-item">
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="show_default_icons">デフォルトアイコンの表示</span>
+                </div>
+              </div>
+              <div class="settings-item">
                 <div class="settings-item-label">
                   <span>Chrome</span>
                 </div>
                 <div class="settings-item-control">
                   <m3e-switch id="toggle_chrome_icon"></m3e-switch>
                 </div>
-            </div>
-            <div class="settings-item">
+              </div>
+              <div class="settings-item">
                 <div class="settings-item-label">
                   <span data-i18n="files">Files</span>
                 </div>
                 <div class="settings-item-control">
                   <m3e-switch id="toggle_files_icon"></m3e-switch>
                 </div>
-            </div>
-            <div class="settings-item">
+              </div>
+              <div class="settings-item">
                 <div class="settings-item-label">
                   <span data-i18n="settings">Settings</span>
                 </div>
                 <div class="settings-item-control">
                   <m3e-switch id="toggle_settings_icon"></m3e-switch>
                 </div>
+              </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="system_settings">
             <h4 class="settings-section-title" data-i18n="system_settings">システム設定</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="settings_button_label">設定ボタン</span>
-                <small data-i18n="settings_button_desc">右下の設定ボタンの表示/非表示</small>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="settings_button_label">設定ボタン</span>
+                  <small data-i18n="settings_button_desc">右下の設定ボタンの表示/非表示</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-switch id="toggle_settings_fab"></m3e-switch>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-switch id="toggle_settings_fab"></m3e-switch>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="target_display">ターゲットディスプレイ</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="display_selector"></m3e-select>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="target_display">ターゲットディスプレイ</span>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="window_resizable">ウィンドウのリサイズ</span>
+                  <small data-i18n="window_resizable_desc">ウィンドウサイズの変更を許可する</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-switch id="toggle_window_resizable"></m3e-switch>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-select id="display_selector"></m3e-select>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="window_resizable">ウィンドウのリサイズ</span>
-                <small data-i18n="window_resizable_desc">ウィンドウサイズの変更を許可する</small>
-              </div>
-              <div class="settings-item-control">
-                <m3e-switch id="toggle_window_resizable"></m3e-switch>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="window_count">ウィンドウ数</span>
-                <small data-i18n="window_count_desc">仮想デスクトップ用のウィンドウ数</small>
-              </div>
-              <div class="settings-item-control">
-                <m3e-select id="window_count_selector">
-                  <m3e-option value="1">1</m3e-option>
-                  <m3e-option value="2">2</m3e-option>
-                  <m3e-option value="3">3</m3e-option>
-                  <m3e-option value="4">4</m3e-option>
-                  <m3e-option value="5">5</m3e-option>
-                  <m3e-option value="6">6</m3e-option>
-                  <m3e-option value="7">7</m3e-option>
-                  <m3e-option value="8">8</m3e-option>
-                </m3e-select>
-                <m3e-button variant="outlined" id="apply_window_count" data-i18n="apply_restart">適用</m3e-button>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="window_count">ウィンドウ数</span>
+                  <small data-i18n="window_count_desc">仮想デスクトップ用のウィンドウ数</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="window_count_selector">
+                    <m3e-option value="1">1</m3e-option>
+                    <m3e-option value="2">2</m3e-option>
+                    <m3e-option value="3">3</m3e-option>
+                    <m3e-option value="4">4</m3e-option>
+                    <m3e-option value="5">5</m3e-option>
+                    <m3e-option value="6">6</m3e-option>
+                    <m3e-option value="7">7</m3e-option>
+                    <m3e-option value="8">8</m3e-option>
+                  </m3e-select>
+                  <m3e-button variant="outlined" id="apply_window_count" data-i18n="apply_restart">適用</m3e-button>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="performance_settings">
             <h4 class="settings-section-title" data-i18n="performance_settings">パフォーマンス設定</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="media_polling_interval">メディア情報の更新間隔</span>
-                <small data-i18n="media_polling_interval_desc">システムの音楽情報などを確認する間隔です。間隔を長くすると負荷が下がります。</small>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="media_polling_interval">メディア情報の更新間隔</span>
+                  <small data-i18n="media_polling_interval_desc">システムの音楽情報などを確認する間隔です。間隔を長くすると負荷が下がります。</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="media_polling_interval_selector">
+                    <m3e-option value="1000" data-i18n="interval_1s">1秒 (高性能)</m3e-option>
+                    <m3e-option value="3000" data-i18n="interval_3s">3秒 (バランス)</m3e-option>
+                    <m3e-option value="5000" data-i18n="interval_5s">5秒 (省電力)</m3e-option>
+                    <m3e-option value="0" data-i18n="interval_off">オフ (機能無効)</m3e-option>
+                  </m3e-select>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-select id="media_polling_interval_selector">
-                  <m3e-option value="1000" data-i18n="interval_1s">1秒 (高性能)</m3e-option>
-                  <m3e-option value="3000" data-i18n="interval_3s">3秒 (バランス)</m3e-option>
-                  <m3e-option value="5000" data-i18n="interval_5s">5秒 (省電力)</m3e-option>
-                  <m3e-option value="0" data-i18n="interval_off">オフ (機能無効)</m3e-option>
-                </m3e-select>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="media_smart_polling">スマートメディアポーリング</span>
-                <small data-i18n="media_smart_polling_desc">メディアプレイヤーウィジェットが表示されているときだけ動作情報を取得します</small>
-              </div>
-              <div class="settings-item-control">
-                <m3e-switch id="toggle_media_smart_polling"></m3e-switch>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="media_smart_polling">スマートメディアポーリング</span>
+                  <small data-i18n="media_smart_polling_desc">メディアプレイヤーウィジェットが表示されているときだけ動作情報を取得します</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-switch id="toggle_media_smart_polling"></m3e-switch>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="security_privacy">
             <h4 class="settings-section-title" data-i18n="security_privacy">セキュリティとプライバシー</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="security_mode">セキュリティモード</span>
-                <small data-i18n="security_mode_desc">入力・通信・セッションの保護レベルを設定</small>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="security_mode">セキュリティモード</span>
+                  <small data-i18n="security_mode_desc">入力・通信・セッションの保護レベルを設定</small>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="security_mode_selector">
+                    <m3e-option value="strict" data-i18n="security_mode_strict">厳格</m3e-option>
+                    <m3e-option value="standard" data-i18n="security_mode_standard">標準</m3e-option>
+                    <m3e-option value="none" data-i18n="security_mode_none">保護なし</m3e-option>
+                  </m3e-select>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-select id="security_mode_selector">
-                  <m3e-option value="strict" data-i18n="security_mode_strict">厳格</m3e-option>
-                  <m3e-option value="standard" data-i18n="security_mode_standard">標準</m3e-option>
-                  <m3e-option value="none" data-i18n="security_mode_none">保護なし</m3e-option>
-                </m3e-select>
-              </div>
-            </div>
-            <div class="settings-item settings-item-column">
-              <div class="settings-item-label">
-                <span data-i18n="allowed_commands">許可コマンド</span>
-                <small data-i18n="allowed_commands_desc">1行1コマンドで実行許可するコマンド名（例: firefox）</small>
-              </div>
-              <div class="settings-item-control" style="width: 100%;">
-                <textarea id="allowed_command_list" style="width: 100%; min-height: 120px;"></textarea>
+              <div class="settings-item settings-item-column">
+                <div class="settings-item-label">
+                  <span data-i18n="allowed_commands">許可コマンド</span>
+                  <small data-i18n="allowed_commands_desc">1行1コマンドで実行許可するコマンド名（例: firefox）</small>
+                </div>
+                <div class="settings-item-control" style="width: 100%;">
+                  <m3e-form-field variant="outlined" style="width: 100%;">
+                    <textarea id="allowed_command_list" style="width: 100%; min-height: 100px;"></textarea>
+                  </m3e-form-field>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="data_management">
             <h4 class="settings-section-title" data-i18n="data_management">データ管理</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="export_import">エクスポート / インポート</span>
-                <small data-i18n="export_desc">現在のすべての設定とウィジェットデータをファイルに保存します。</small>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="export_import">エクスポート / インポート</span>
+                  <small data-i18n="export_desc">現在のすべての設定とウィジェットデータをファイルに保存します。</small>
+                </div>
+                <div class="settings-item-control" style="gap: 8px; flex-wrap: wrap;">
+                  <m3e-button variant="outlined" id="export_settings_btn" data-i18n="export_settings">設定をエクスポート</m3e-button>
+                  <m3e-button variant="outlined" id="import_settings_btn" data-i18n="import_settings">設定をインポート</m3e-button>
+                </div>
               </div>
-              <div class="settings-item-control" style="gap: 8px; flex-wrap: wrap;">
-                <m3e-button variant="outlined" id="export_settings_btn" data-i18n="export_settings">設定をエクスポート</m3e-button>
-                <m3e-button variant="outlined" id="import_settings_btn" data-i18n="import_settings">設定をインポート</m3e-button>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="folder_style">フォルダーのスタイル</span>
+                  <small data-i18n="apply_folder_style_all_desc">すべてのフォルダーにスタイルを適用</small>
+                </div>
+                <div class="settings-item-control">
+                   <input type="color" id="global_folder_bg_color" value="#ffffff">
+                   <m3e-slider id="global_folder_bg_opacity" min="0" max="1" step="0.05" style="width: 100px;">
+                     <m3e-slider-thumb value="1"></m3e-slider-thumb>
+                   </m3e-slider>
+                   <m3e-button variant="outlined" id="apply_folder_style_all" data-i18n="apply_to_all">適用</m3e-button>
+                </div>
+              </div>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="reset_widget_sizes_label">ウィジェットサイズをリセット</span>
+                </div>
+                <div class="settings-item-control">
+                   <m3e-button variant="outlined" id="reset_widget_sizes_btn" data-i18n="reset">リセット</m3e-button>
+                </div>
               </div>
             </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="folder_style">フォルダーのスタイル</span>
-                <small data-i18n="apply_folder_style_all_desc">すべてのフォルダーにスタイルを適用</small>
-              </div>
-              <div class="settings-item-control">
-                 <input type="color" id="global_folder_bg_color" value="#ffffff">
-                 <m3e-slider id="global_folder_bg_opacity" min="0" max="1" step="0.05" style="width: 100px;">
-                   <m3e-slider-thumb value="1"></m3e-slider-thumb>
-                 </m3e-slider>
-                 <m3e-button variant="outlined" id="apply_folder_style_all" data-i18n="apply_to_all">適用</m3e-button>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="reset_widget_sizes_label">ウィジェットサイズをリセット</span>
-              </div>
-              <div class="settings-item-control">
-                 <m3e-button variant="outlined" id="reset_widget_sizes_btn" data-i18n="reset">リセット</m3e-button>
-              </div>
-            </div>
-            <div class="settings-item settings-item-danger">
-              <div class="settings-item-label">
-                <span data-i18n="delete_all_data">すべてのデータを削除</span>
-              </div>
-              <div class="settings-item-control">
-                <m3e-button variant="filled" id="delete_all_data_btn" class="danger-button" data-i18n="delete">削除</m3e-button>
+            <div class="settings-group-card">
+              <div class="settings-item settings-item-danger">
+                <div class="settings-item-label">
+                  <span data-i18n="delete_all_data">すべてのデータを削除</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-button variant="filled" id="delete_all_data_btn" class="danger-button" data-i18n="delete">削除</m3e-button>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="ai_settings">
             <h4 class="settings-section-title" data-i18n="ai_settings">AI設定</h4>
-            <div class="settings-item settings-item-column">
-              <div class="settings-item-label">
-                <span data-i18n="gemini_api_key">Gemini APIキー</span>
+            <div class="settings-group-card">
+              <div class="settings-item settings-item-column">
+                <div class="settings-item-label">
+                  <span data-i18n="gemini_api_key">Gemini APIキー</span>
+                </div>
+                <div class="settings-item-control" style="width: 100%;">
+                  <m3e-form-field variant="outlined" style="width: 100%;">
+                    <m3e-icon slot="leading" name="key"></m3e-icon>
+                    <input type="password" id="gemini_api_key_input" style="width: 100%; box-sizing: border-box;" data-i18n="enter_api_key" placeholder="APIキーを入力してください" />
+                  </m3e-form-field>
+                </div>
               </div>
-              <div class="settings-item-control" style="width: 100%;">
-                <input type="password" id="gemini_api_key_input" style="width: 100%; box-sizing: border-box;" data-i18n="enter_api_key" placeholder="APIキーを入力してください" />
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="gemini_model">Geminiモデル</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="gemini_model_selector" style="width: 100%;">
+                    <m3e-option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (推奨・高速)</m3e-option>
+                    <m3e-option value="gemini-2.5-flash">gemini-2.5-flash</m3e-option>
+                    <m3e-option value="gemini-2.5-pro">gemini-2.5-pro</m3e-option>
+                    <m3e-option value="gemini-1.5-flash">gemini-1.5-flash</m3e-option>
+                    <m3e-option value="gemini-1.5-pro">gemini-1.5-pro</m3e-option>
+                  </m3e-select>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="gemini_model">Geminiモデル</span>
-              </div>
-              <div class="settings-item-control">
-                <m3e-select id="gemini_model_selector" style="width: 100%;">
-                  <m3e-option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (推奨・高速)</m3e-option>
-                  <m3e-option value="gemini-2.5-flash">gemini-2.5-flash</m3e-option>
-                  <m3e-option value="gemini-2.5-pro">gemini-2.5-pro</m3e-option>
-                  <m3e-option value="gemini-1.5-flash">gemini-1.5-flash</m3e-option>
-                  <m3e-option value="gemini-1.5-pro">gemini-1.5-pro</m3e-option>
-                </m3e-select>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="ai_default_mode">デフォルトモード</span>
-              </div>
-              <div class="settings-item-control">
-                <m3e-select id="gemini_default_mode_selector" style="width: 100%;">
-                  <m3e-option value="chat" data-i18n="ai_mode_chat">会話</m3e-option>
-                  <m3e-option value="trans_en" data-i18n="ai_mode_trans_en">翻訳 ➔ 英語</m3e-option>
-                  <m3e-option value="trans_ja" data-i18n="ai_mode_trans_ja">翻訳 ➔ 日本語</m3e-option>
-                </m3e-select>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="ai_default_mode">デフォルトモード</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="gemini_default_mode_selector" style="width: 100%;">
+                    <m3e-option value="chat" data-i18n="ai_mode_chat">会話</m3e-option>
+                    <m3e-option value="trans_en" data-i18n="ai_mode_trans_en">翻訳 ➔ 英語</m3e-option>
+                    <m3e-option value="trans_ja" data-i18n="ai_mode_trans_ja">翻訳 ➔ 日本語</m3e-option>
+                  </m3e-select>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="about">
             <h4 class="settings-section-title" data-i18n="about">バージョン情報</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span>Soul Widgets Manager</span>
-                <small id="app_version_display">v0.1</small>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span>Soul Widgets Manager</span>
+                  <small id="app_version_display">v0.1</small>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="update_channel">アップデートチャンネル</span>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="update_channel">アップデートチャンネル</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-select id="update_channel_selector">
+                    <m3e-option value="stable">Stable</m3e-option>
+                    <m3e-option value="develop">Develop</m3e-option>
+                  </m3e-select>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-select id="update_channel_selector">
-                  <m3e-option value="stable">Stable</m3e-option>
-                  <m3e-option value="develop">Develop</m3e-option>
-                </m3e-select>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="check_updates">アップデートの確認</span>
-              </div>
-              <div class="settings-item-control">
-                <m3e-button variant="outlined" id="check_updates_btn" data-i18n="check_now">今すぐ確認</m3e-button>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="check_updates">アップデートの確認</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-button variant="outlined" id="check_updates_btn" data-i18n="check_now">今すぐ確認</m3e-button>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section" data-section="developer_settings">
             <h4 class="settings-section-title" data-i18n="dev_settings">開発者向け設定</h4>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="auto_open_devtools">起動時に開発者ツールを開く</span>
+            <div class="settings-group-card">
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="auto_open_devtools">起動時に開発者ツールを開く</span>
+                </div>
+                <div class="settings-item-control">
+                  <m3e-switch id="toggle_auto_open_devtools"></m3e-switch>
+                </div>
               </div>
-              <div class="settings-item-control">
-                <m3e-switch id="toggle_auto_open_devtools"></m3e-switch>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="open_devtools">開発者ツールを開く</span>
+                </div>
+                <div class="settings-item-control">
+                   <m3e-button variant="outlined" id="open_devtools_btn" data-i18n="open">開く</m3e-button>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="open_devtools">開発者ツールを開く</span>
-              </div>
-              <div class="settings-item-control">
-                 <m3e-button variant="outlined" id="open_devtools_btn" data-i18n="open">開く</m3e-button>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-label">
-                <span data-i18n="user_agent">ユーザーエージェント</span>
-                <small id="developer_user_agent" style="word-break: break-all; max-width: 400px; margin-top: 4px;"></small>
+              <div class="settings-item">
+                <div class="settings-item-label">
+                  <span data-i18n="user_agent">ユーザーエージェント</span>
+                  <small id="developer_user_agent" style="word-break: break-all; max-width: 400px; margin-top: 4px;"></small>
+                </div>
               </div>
             </div>
           </div>
@@ -1210,23 +1286,23 @@
           <div id="magic_pointer_items_tray" class="magic-pointer-items-tray">
             <!-- Selected context items inserted dynamically -->
           </div>
-          <button id="magic_pointer_add_item_btn" class="magic-pointer-add-btn" title="Point & select context">
+          <m3e-icon-button id="magic_pointer_add_item_btn" class="magic-pointer-add-btn" variant="outlined" title="Point & select context">
             <m3e-icon name="add"></m3e-icon>
-          </button>
+          </m3e-icon-button>
           <div class="magic-pointer-top-actions">
-            <button id="magic_pointer_expand_btn" class="magic-pointer-icon-action" title="Expand">
+            <m3e-icon-button id="magic_pointer_expand_btn" class="magic-pointer-icon-action" variant="standard" title="Expand">
               <m3e-icon name="north_east"></m3e-icon>
-            </button>
-            <button id="ai_prompt_close" class="magic-pointer-icon-action" title="Close">
+            </m3e-icon-button>
+            <m3e-icon-button id="ai_prompt_close" class="magic-pointer-icon-action" variant="standard" title="Close">
               <m3e-icon name="close"></m3e-icon>
-            </button>
+            </m3e-icon-button>
           </div>
         </div>
         <div class="magic-pointer-input-row">
           <textarea id="ai_prompt_input" rows="1" data-i18n="magic_pointer_placeholder" placeholder="Point and select to ask Gemini"></textarea>
-          <button id="ai_prompt_submit" class="magic-pointer-submit-btn" title="Send">
+          <m3e-icon-button id="ai_prompt_submit" class="magic-pointer-submit-btn" variant="filled" title="Send">
             <m3e-icon name="send"></m3e-icon>
-          </button>
+          </m3e-icon-button>
         </div>
         <div id="ai_response_panel" class="ai-response-panel" style="display: none;">
           <div id="ai_response_content" class="ai-response-content"></div>
@@ -1237,6 +1313,21 @@
         <!-- Dynamically rendered chips (up to 3) -->
       </div>
     </div>
+    <!-- Floating Tooltips for actions -->
+    <m3e-tooltip for="settings_fab" data-i18n="settings">設定</m3e-tooltip>
+    <m3e-tooltip for="close_add_widget_modal" data-i18n="close">とじる</m3e-tooltip>
+    <m3e-tooltip for="media_shuffle">Shuffle</m3e-tooltip>
+    <m3e-tooltip for="media_prev">Previous</m3e-tooltip>
+    <m3e-tooltip for="media_play_pause">Play / Pause</m3e-tooltip>
+    <m3e-tooltip for="media_next">Next</m3e-tooltip>
+    <m3e-tooltip for="media_repeat">Repeat</m3e-tooltip>
+    <m3e-tooltip for="github_refresh_btn" data-i18n="refresh">更新</m3e-tooltip>
+    <m3e-tooltip for="github_settings_btn" data-i18n="settings">設定</m3e-tooltip>
+    <m3e-tooltip for="google_calendar_refresh_btn" data-i18n="refresh">更新</m3e-tooltip>
+    <m3e-tooltip for="google_calendar_settings_btn" data-i18n="settings">設定</m3e-tooltip>
+    <m3e-tooltip for="gmail_refresh_btn" data-i18n="refresh">更新</m3e-tooltip>
+    <m3e-tooltip for="gmail_settings_btn" data-i18n="settings">設定</m3e-tooltip>
+
     <!-- コンテキストメニュー用アンカー -->
     <div id="context_menu_anchor" style="position: fixed; pointer-events: none; width: 0; height: 0;"></div>
   </body>

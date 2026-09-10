@@ -1569,34 +1569,367 @@ if (desktopIconsContainer && desktopContextMenu) {
 }
 
 // ========================================
-// ウィジェット追加モーダル
+// ウィジェット追加モーダル (Aluminium OS Style)
 // ========================================
 const addWidgetModalOverlay = document.getElementById('add_widget_modal_overlay');
 const closeAddWidgetModalBtn = document.getElementById('close_add_widget_modal');
-const widgetListContainer = document.getElementById('widget_list');
+const widgetPickerSearchInput = document.getElementById('widget_picker_search');
+const widgetPickerCategoriesContainer = document.getElementById('widget_picker_categories');
+const widgetPickerPreviewArea = document.getElementById('widget_picker_preview_area');
 
-function openAddWidgetModal() {
-  if (!widgetListContainer || !addWidgetModalOverlay) return;
+let currentWidgetPickerCategory = 'featured';
+let widgetPickerSearchQuery = '';
 
-  widgetListContainer.innerHTML = ''; // リストをクリア
+// Widget category definitions matching Aluminium OS widgets
+const widgetCategoryDefinitions = [
+  {
+    id: 'featured',
+    name: 'Featured',
+    icon: 'star',
+    iconType: 'icon',
+    count: 4,
+    widgets: ['widget-clock', 'weather_widget', 'media_player_widget', 'google_calendar_widget']
+  },
+  {
+    id: 'clock',
+    name: 'Clock',
+    icon: 'schedule',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['widget-clock']
+  },
+  {
+    id: 'weather',
+    name: 'Weather',
+    icon: 'cloud',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['weather_widget']
+  },
+  {
+    id: 'media',
+    name: 'Media Player',
+    icon: 'music_note',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['media_player_widget']
+  },
+  {
+    id: 'calendar',
+    name: 'Google Calendar',
+    icon: 'calendar_month',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['google_calendar_widget']
+  },
+  {
+    id: 'gmail',
+    name: 'Gmail',
+    icon: 'mail',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['gmail_widget']
+  },
+  {
+    id: 'github',
+    name: 'GitHub',
+    icon: 'code',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['github_contribution_widget']
+  },
+  {
+    id: 'gemini',
+    name: 'Gemini Intelligence',
+    icon: 'auto_awesome',
+    iconType: 'icon',
+    count: 1,
+    widgets: ['gemini_pointer']
+  }
+];
 
-  for (const widgetId in availableWidgets) {
-    const widgetInfo = availableWidgets[widgetId];
-    const btn = document.createElement('m3e-button');
-    btn.variant = 'outlined';
-    btn.textContent = widgetInfo.name;
-    btn.dataset.widgetId = widgetId;
-    btn.disabled = widgetVisibility[widgetId]; // 既に表示されている場合は無効化
-    btn.style.width = '100%';
+function getWidgetMetadata(widgetId) {
+  switch (widgetId) {
+    case 'widget-clock':
+      return {
+        id: 'widget-clock',
+        name: window.i18n ? window.i18n.t('clock') || 'Clock' : 'Clock',
+        appName: 'Clock',
+        appIcon: 'schedule',
+        origWidth: 212,
+        origHeight: 210,
+        viewWidth: 140,
+        viewHeight: 140,
+        scale: 0.65
+      };
+    case 'weather_widget':
+      return {
+        id: 'weather_widget',
+        name: window.i18n ? window.i18n.t('weather') || 'Weather' : 'Weather',
+        appName: 'Weather',
+        appIcon: 'cloud',
+        origWidth: 180,
+        origHeight: 180,
+        viewWidth: 140,
+        viewHeight: 140,
+        scale: 0.77
+      };
+    case 'media_player_widget':
+      return {
+        id: 'media_player_widget',
+        name: window.i18n ? window.i18n.t('media_player') || 'Media Player' : 'Media Player',
+        appName: 'Media Player',
+        appIcon: 'music_note',
+        origWidth: 320,
+        origHeight: 180,
+        viewWidth: 210,
+        viewHeight: 120,
+        scale: 0.65
+      };
+    case 'google_calendar_widget':
+      return {
+        id: 'google_calendar_widget',
+        name: 'Google Calendar',
+        appName: 'Google Calendar',
+        appIcon: 'calendar_month',
+        origWidth: 380,
+        origHeight: 320,
+        viewWidth: 210,
+        viewHeight: 140,
+        scale: 0.52
+      };
+    case 'gmail_widget':
+      return {
+        id: 'gmail_widget',
+        name: 'Gmail',
+        appName: 'Gmail',
+        appIcon: 'mail',
+        origWidth: 360,
+        origHeight: 280,
+        viewWidth: 200,
+        viewHeight: 130,
+        scale: 0.52
+      };
+    case 'github_contribution_widget':
+      return {
+        id: 'github_contribution_widget',
+        name: 'GitHub Contributions',
+        appName: 'GitHub',
+        appIcon: 'code',
+        origWidth: 380,
+        origHeight: 220,
+        viewWidth: 220,
+        viewHeight: 125,
+        scale: 0.56
+      };
+    case 'gemini_pointer':
+      return {
+        id: 'gemini_pointer',
+        name: 'Gemini Intelligence',
+        appName: 'Gemini',
+        appIcon: 'auto_awesome',
+        origWidth: 320,
+        origHeight: 220,
+        viewWidth: 180,
+        viewHeight: 125,
+        scale: 0.56
+      };
+    default:
+      return null;
+  }
+}
 
-    btn.onclick = async () => {
-      await setWidgetVisibility(widgetId, true);
-      addWidgetModalOverlay.style.display = 'none';
-    };
-    widgetListContainer.appendChild(btn);
+async function openAddWidgetModal() {
+  if (!addWidgetModalOverlay) return;
+
+  currentWidgetPickerCategory = 'featured';
+  widgetPickerSearchQuery = '';
+  if (widgetPickerSearchInput) {
+    widgetPickerSearchInput.value = '';
+  }
+
+  // Preload all widget CSS and JS so that the cloned widgets render with accurate styling and structure
+  if (window.WidgetLoader) {
+    const allWidgetIds = Object.keys(availableWidgets);
+    await Promise.all(allWidgetIds.map(id => window.WidgetLoader.load(id)));
+  }
+
+  renderWidgetPickerCategories();
+  renderWidgetPickerPreviews();
+
+  if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+    window.i18n.applyTranslations(addWidgetModalOverlay);
   }
 
   addWidgetModalOverlay.style.display = 'flex';
+}
+
+function renderWidgetPickerCategories() {
+  if (!widgetPickerCategoriesContainer) return;
+  widgetPickerCategoriesContainer.innerHTML = '';
+
+  const query = widgetPickerSearchQuery.toLowerCase().trim();
+
+  widgetCategoryDefinitions.forEach(cat => {
+    // If search active, check if category or contained widgets match
+    if (query) {
+      const matchCat = cat.name.toLowerCase().includes(query);
+      const matchWidgets = cat.widgets.some(wId => {
+        const meta = getWidgetMetadata(wId);
+        return meta && (meta.name.toLowerCase().includes(query) || meta.appName.toLowerCase().includes(query));
+      });
+      if (!matchCat && !matchWidgets) return;
+    }
+
+    const btn = document.createElement('button');
+    btn.className = `widget-category-item ${currentWidgetPickerCategory === cat.id ? 'active' : ''}`;
+    btn.onclick = () => {
+      currentWidgetPickerCategory = cat.id;
+      renderWidgetPickerCategories();
+      renderWidgetPickerPreviews();
+    };
+
+    const iconWrapper = document.createElement('div');
+    iconWrapper.className = 'widget-category-icon-wrapper';
+    iconWrapper.innerHTML = `<m3e-icon name="${cat.icon}"></m3e-icon>`;
+
+    const info = document.createElement('div');
+    info.className = 'widget-category-info';
+
+    const name = document.createElement('div');
+    name.className = 'widget-category-name';
+    name.textContent = cat.name;
+
+    const count = document.createElement('div');
+    count.className = 'widget-category-count';
+    count.textContent = `${cat.count} ${cat.count === 1 ? 'widget' : 'widgets'}`;
+
+    info.appendChild(name);
+    info.appendChild(count);
+    btn.appendChild(iconWrapper);
+    btn.appendChild(info);
+
+    widgetPickerCategoriesContainer.appendChild(btn);
+  });
+}
+
+function renderWidgetPickerPreviews() {
+  if (!widgetPickerPreviewArea) return;
+  widgetPickerPreviewArea.innerHTML = '';
+
+  const cat = widgetCategoryDefinitions.find(c => c.id === currentWidgetPickerCategory) || widgetCategoryDefinitions[0];
+  const query = widgetPickerSearchQuery.toLowerCase().trim();
+
+  let targetWidgets = cat.widgets;
+
+  if (query) {
+    // When searching, search all widgets
+    const allUnique = Array.from(new Set(widgetCategoryDefinitions.flatMap(c => c.widgets)));
+    targetWidgets = allUnique.filter(wId => {
+      const meta = getWidgetMetadata(wId);
+      return meta && (meta.name.toLowerCase().includes(query) || meta.appName.toLowerCase().includes(query));
+    });
+  }
+
+  targetWidgets.forEach(widgetId => {
+    const meta = getWidgetMetadata(widgetId);
+    if (!meta) return;
+
+    const isVisible = widgetId === 'gemini_pointer' ? false : (widgetVisibility[widgetId] || false);
+
+    const card = document.createElement('div');
+    card.className = `widget-preview-card ${isVisible ? 'added' : ''}`;
+    card.title = isVisible ? (window.i18n ? window.i18n.t('widget_already_added') || 'Already Added' : 'Already Added') : (window.i18n ? window.i18n.t('add') || 'Add' : 'Add');
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'widget-preview-wrapper';
+
+    const viewport = document.createElement('div');
+    viewport.className = 'widget-real-preview-viewport';
+    viewport.style.width = `${meta.viewWidth}px`;
+    viewport.style.height = `${meta.viewHeight}px`;
+
+    const scaler = document.createElement('div');
+    scaler.className = 'widget-real-preview-scaler';
+    scaler.style.width = `${meta.origWidth}px`;
+    scaler.style.height = `${meta.origHeight}px`;
+    scaler.style.transform = `scale(${meta.scale})`;
+
+    if (widgetId === 'gemini_pointer') {
+      scaler.innerHTML = `
+        <div class="mini-gemini-preview" style="width: ${meta.origWidth}px; height: ${meta.origHeight}px;">
+          <div class="mini-gemini-pill">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <m3e-icon name="auto_awesome" style="font-size: 18px; color: #a8c7fa;"></m3e-icon>
+              <span style="font-size: 14px;">Gemini</span>
+            </div>
+            <m3e-icon name="mic" style="font-size: 18px;"></m3e-icon>
+          </div>
+          <div class="mini-gemini-actions" style="gap: 12px; margin-top: 6px;">
+            <div class="mini-gemini-btn" style="height: 48px;"><m3e-icon name="photo_camera" style="font-size: 22px;"></m3e-icon></div>
+            <div class="mini-gemini-btn" style="height: 48px;"><m3e-icon name="attach_file" style="font-size: 22px;"></m3e-icon></div>
+            <div class="mini-gemini-btn" style="height: 48px;"><m3e-icon name="image" style="font-size: 22px;"></m3e-icon></div>
+            <div class="mini-gemini-btn" style="height: 48px;"><m3e-icon name="graphic_eq" style="font-size: 22px;"></m3e-icon></div>
+          </div>
+        </div>
+      `;
+    } else {
+      const realEl = document.getElementById(widgetId);
+      if (realEl) {
+        const clone = realEl.cloneNode(true);
+        clone.id = `preview_clone_${widgetId}`;
+        clone.style.display = 'flex';
+        clone.style.position = 'static';
+        clone.style.transform = 'none';
+        clone.style.margin = '0';
+        clone.classList.remove('header-always-hide', 'header-hover-show');
+        scaler.appendChild(clone);
+      }
+    }
+
+    viewport.appendChild(scaler);
+    wrapper.appendChild(viewport);
+
+    if (isVisible) {
+      const badge = document.createElement('m3e-badge');
+      badge.className = 'widget-preview-badge';
+      badge.setAttribute('size', 'medium');
+      badge.textContent = '✓ Added';
+      wrapper.appendChild(badge);
+    }
+
+    const labelRow = document.createElement('div');
+    labelRow.className = 'widget-preview-label-row';
+    labelRow.innerHTML = `<m3e-icon name="${meta.appIcon}"></m3e-icon><span>${escapeHTML(meta.name)}</span>`;
+
+    card.appendChild(wrapper);
+    card.appendChild(labelRow);
+
+    card.onclick = async () => {
+      if (widgetId === 'gemini_pointer') {
+        // Open Magic Pointer
+        addWidgetModalOverlay.style.display = 'none';
+        showAIPromptCard(window.innerWidth / 2 - 160, window.innerHeight / 2 - 100);
+        return;
+      }
+
+      if (!isVisible) {
+        await setWidgetVisibility(widgetId, true);
+        addWidgetModalOverlay.style.display = 'none';
+      }
+    };
+
+    widgetPickerPreviewArea.appendChild(card);
+  });
+}
+
+// Search input listener
+if (widgetPickerSearchInput) {
+  widgetPickerSearchInput.addEventListener('input', (e) => {
+    widgetPickerSearchQuery = e.target.value;
+    renderWidgetPickerCategories();
+    renderWidgetPickerPreviews();
+  });
 }
 
 if (closeAddWidgetModalBtn) {
@@ -3351,9 +3684,10 @@ function renderChips(chips) {
   chipsTray.innerHTML = '';
 
   chips.forEach(chip => {
-    const btn = document.createElement('button');
+    const btn = document.createElement('m3e-suggestion-chip');
+    btn.setAttribute('variant', 'elevated');
     btn.className = 'magic-pointer-chip';
-    btn.innerHTML = `<m3e-icon name="${chip.icon || 'auto_awesome'}"></m3e-icon><span>${escapeHTML(chip.label)}</span>`;
+    btn.innerHTML = `<m3e-icon slot="icon" name="${chip.icon || 'auto_awesome'}"></m3e-icon>${escapeHTML(chip.label)}`;
     btn.addEventListener('click', () => {
       executeChipAction(chip);
     });

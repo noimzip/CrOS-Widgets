@@ -234,13 +234,16 @@ async function updateMediaPlayer() {
     if (info.shuffle) {
       currentShuffle = info.shuffle;
       if (mediaShuffleBtn) {
-        mediaShuffleBtn.classList.toggle('active', currentShuffle === 'On');
-        mediaShuffleBtn.title = currentShuffle === 'On' ? 'Shuffle: On' : 'Shuffle: Off';
+        const isShuffleOn = currentShuffle === 'On';
+        mediaShuffleBtn.classList.toggle('active', isShuffleOn);
+        mediaShuffleBtn.setAttribute('variant', isShuffleOn ? 'filled-tonal' : 'standard');
+        mediaShuffleBtn.title = `Shuffle: ${currentShuffle}`;
         mediaShuffleBtn.disabled = false;
       }
     } else if (mediaShuffleBtn) {
       mediaShuffleBtn.disabled = true;
       mediaShuffleBtn.classList.remove('active');
+      mediaShuffleBtn.setAttribute('variant', 'standard');
       mediaShuffleBtn.title = 'Shuffle';
     }
 
@@ -254,6 +257,7 @@ async function updateMediaPlayer() {
         
         mediaRepeatBtn.classList.toggle('active', isActive);
         mediaRepeatBtn.classList.toggle('repeat-one', isTrack);
+        mediaRepeatBtn.setAttribute('variant', isActive ? 'filled-tonal' : 'standard');
         
         const icon = mediaRepeatBtn.querySelector('m3e-icon');
         if (icon) {
@@ -274,6 +278,7 @@ async function updateMediaPlayer() {
       mediaRepeatBtn.disabled = true;
       mediaRepeatBtn.classList.remove('active');
       mediaRepeatBtn.classList.remove('repeat-one');
+      mediaRepeatBtn.setAttribute('variant', 'standard');
       mediaRepeatBtn.title = 'Repeat';
     }
   }

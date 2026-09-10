@@ -360,7 +360,7 @@ function populateGitHubYearSelect(data) {
   githubYearSelect.innerHTML = '';
   
   // Last Year
-  const lastOption = document.createElement('option');
+  const lastOption = document.createElement('m3e-option');
   lastOption.value = 'last';
   lastOption.textContent = i18n.t('last_year');
   githubYearSelect.appendChild(lastOption);
@@ -377,19 +377,23 @@ function populateGitHubYearSelect(data) {
   years.sort((a, b) => b - a);
   
   years.forEach(year => {
-    const option = document.createElement('option');
-    option.value = year;
-    option.textContent = year;
+    const option = document.createElement('m3e-option');
+    option.value = year.toString();
+    option.textContent = year.toString();
     githubYearSelect.appendChild(option);
   });
   
-  githubYearSelect.value = currentGitHubYear;
+  if (window.setSelectValue) {
+    window.setSelectValue(githubYearSelect, currentGitHubYear.toString());
+  } else {
+    githubYearSelect.value = currentGitHubYear;
+  }
   githubYearSelect.style.display = 'block';
   
-  githubYearSelect.onchange = (e) => {
+  githubYearSelect.addEventListener('change', (e) => {
     currentGitHubYear = e.target.value;
     renderGitHubGraph(githubData, currentGitHubYear);
-  };
+  });
 
   // セレクトボックスでのポインターイベントがウィジェットのドラッグを開始させないようにする
   githubYearSelect.onpointerdown = (e) => {
@@ -427,7 +431,7 @@ async function updateGitHubWidget() {
   if (githubGraph) {
     githubGraph.innerHTML = `
       <div class="github-loading">
-        <m3e-icon name="hourglass_empty"></m3e-icon>
+        <m3e-loading-indicator></m3e-loading-indicator>
         <span>${i18n.t('loading')}</span>
       </div>
     `;

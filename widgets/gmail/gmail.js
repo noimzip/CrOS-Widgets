@@ -135,7 +135,7 @@ async function updateGmailWidget() {
 
   gmailContent.innerHTML = `
     <div class="gmail-loading">
-      <m3e-icon name="hourglass_empty"></m3e-icon>
+      <m3e-loading-indicator></m3e-loading-indicator>
       <span data-i18n="loading">${i18n.t('loading')}</span>
     </div>
   `;

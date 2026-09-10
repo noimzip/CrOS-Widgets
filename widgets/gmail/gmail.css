@@ -47,22 +47,9 @@ body:not([class*="color-scheme-"]) .gmail-header {
 }
 
 .gmail-settings-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  --m3e-icon-button-size: 32px;
+  --m3e-icon-button-color: inherit;
   color: inherit;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast), transform var(--transition-fast);
-}
-
-.gmail-settings-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
 }
 
 .gmail-settings-btn:active {
@@ -97,14 +84,8 @@ body:not([class*="color-scheme-"]) .gmail-header {
   gap: 12px;
 }
 
-.gmail-loading m3e-icon {
-  font-size: 28px;
-  animation: spin 1.5s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.gmail-loading m3e-loading-indicator {
+  --m3e-loading-indicator-size: 36px;
 }
 
 .gmail-item {
