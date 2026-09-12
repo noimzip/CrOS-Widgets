@@ -27,7 +27,6 @@ const LS_KEYS = {
   COLOR_SCHEME: 'colorScheme',
   CUSTOM_COLOR: 'customColor',
   SHOW_SETTINGS_FAB: 'showSettingsFab',
-  BLUR_EFFECT_ENABLED: 'blurEffectEnabled',
   DARK_MODE_ENABLED: 'darkModeEnabled',
   DARK_MODE_SETTING: 'darkModeSetting',
   GITHUB_USERNAME: 'githubUsername',

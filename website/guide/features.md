@@ -46,8 +46,7 @@ Group your shortcuts into customizable folders to keep your desktop tidy.
 ### Customization
 Built with the **@m3e** library, the UI follows Material Design 3 principles:
 - **Themes:** Dark, Light, and System modes.
-- **Colors:** Custom color schemes, including extraction from images.
-- **Visuals:** Adjustable icon shapes and blur effects.
+- **Visuals:** Adjustable icon shapes and animations.
 
 ## 🖥️ System Integration
 

@@ -164,7 +164,6 @@ m3e-slider#media_seekbar[disabled] {
   display: none;
   white-space: nowrap;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  backdrop-filter: blur(2px);
   border: 1px solid rgba(255,255,255,0.1);
   transform: translateZ(0);
 }

@@ -497,15 +497,8 @@ body {
 }
 
 .appicon:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
-  transform: translateY(-2px) translateZ(0);
-}
-
-/* ブラー無効時 */
-body.no-blur .appicon:hover {
-  backdrop-filter: none;
   background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px) translateZ(0);
 }
 
 .appicon:active {
@@ -620,20 +613,13 @@ body.icon-shape-square .appicon.folder .folder-preview {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 3px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.25) 100%);
-  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: var(--radius-md);
   padding: 5px;
   box-sizing: border-box;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), var(--shadow-sm);
   transition: all var(--transition-normal), background 0.3s ease;
   transform: translateZ(0);
-}
-
-/* ブラー無効時 */
-body.no-blur .appicon.folder .folder-preview {
-  backdrop-filter: none;
-  background: rgba(255, 255, 255, 0.35);
 }
 
 .appicon.folder:hover .folder-preview {
@@ -806,7 +792,6 @@ m3e-dialog {
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
   z-index: 100;
   justify-content: center;
   align-items: center;
@@ -821,12 +806,6 @@ m3e-dialog {
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
-}
-
-/* ブラー無効時 */
-body.no-blur .modal_overlay {
-  backdrop-filter: none;
-  background-color: rgba(0, 0, 0, 0.5);
 }
 
 @keyframes fadeIn {
@@ -1115,7 +1094,6 @@ body.dark-mode .settings-group-card {
 
 #change_widget_position_modal_overlay {
   background-color: rgba(0, 0, 0, 0.15);
-  backdrop-filter: none;
   z-index: 100;
   pointer-events: none;
 }
@@ -1499,9 +1477,8 @@ body.dark-mode .settings-group-card {
    ======================================== */
 
 m3e-menu {
-  --m3e-menu-container-color: rgba(255, 255, 255, 0.9);
+  --m3e-menu-container-color: #ffffff;
   --m3e-menu-container-shape: var(--radius-md);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 0, 0, 0.08);
   --m3e-menu-item-color: var(--on-surface);
   --m3e-menu-item-container-hover-color: var(--on-surface);
@@ -1509,7 +1486,7 @@ m3e-menu {
 }
 
 body.dark-mode m3e-menu {
-  --m3e-menu-container-color: rgba(45, 45, 45, 0.9);
+  --m3e-menu-container-color: rgba(40, 40, 45, 0.98);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -1549,24 +1526,9 @@ m3e-menu-item m3e-icon {
 }
 
 .folder-drag-clone {
-  background: rgba(40, 40, 45, 0.95);
-  backdrop-filter: blur(10px);
+  background: rgba(35, 38, 45, 0.96);
   border-radius: var(--radius-md);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* ブラー無効時のコンテキストメニュー */
-body.no-blur m3e-menu {
-  backdrop-filter: none;
-  --m3e-menu-container-color: #ffffff;
-}
-
-body.no-blur.dark-mode m3e-menu {
-  --m3e-menu-container-color: rgba(40, 40, 45, 0.98);
-}
-
-body.no-blur .folder-drag-clone {
-  backdrop-filter: none;
 }
 
 .folder-item.reorder-target {
@@ -1812,9 +1774,7 @@ body.no-animations *::after {
   align-items: flex-start;
   justify-content: center;
   padding-top: 8vh;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
   transition: opacity 0.18s ease;
   opacity: 1;
 }
@@ -1826,9 +1786,7 @@ body.no-animations *::after {
 #spotlight_modal {
   width: 640px;
   max-width: 90vw;
-  background: rgba(250, 251, 254, 0.88);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  background: rgba(250, 251, 254, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.65);
   border-radius: 20px;
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28), 0 4px 20px rgba(0, 0, 0, 0.12);
@@ -2016,7 +1974,7 @@ body.dark-mode #spotlight_search_bar {
 
 /* Dark mode */
 body.dark-mode #spotlight_modal {
-  background: rgba(20, 22, 28, 0.92);
+  background: #14161c;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -2454,14 +2412,12 @@ body.dark-mode input[type="password"]:focus {
    Aluminium OS Widgets Picker Modal
    ======================================== */
 .widget-picker-overlay {
-  background-color: rgba(20, 25, 30, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(20, 25, 30, 0.65);
   z-index: 1000;
 }
 
 body.dark-mode .widget-picker-overlay {
-  background-color: rgba(10, 12, 16, 0.6);
+  background-color: rgba(10, 12, 16, 0.75);
 }
 
 .widget-picker-modal {

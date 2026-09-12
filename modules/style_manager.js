@@ -162,18 +162,6 @@ window.StyleManager = {
   },
 
   /**
-   * ブラー効果を更新
-   */
-  updateBlurEffect(isEnabled) {
-    if (isEnabled) {
-      document.body.classList.remove('no-blur');
-    } else {
-      document.body.classList.add('no-blur');
-    }
-    localStorage.setItem(LS_KEYS.BLUR_EFFECT_ENABLED, isEnabled);
-  },
-
-  /**
    * アニメーション無効化状態を更新
    */
   updateAnimationsDisabled(isDisabled) {

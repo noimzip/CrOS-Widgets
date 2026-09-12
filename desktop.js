@@ -1063,20 +1063,6 @@ if (toggleSettingsFabBtn) {
   });
 }
 
-// ブラー効果の設定
-const toggleBlurEffectBtn = document.getElementById('toggle_blur_effect');
-const updateBlurEffect = window.StyleManager.updateBlurEffect.bind(window.StyleManager);
-
-if (toggleBlurEffectBtn) {
-  // 保存された設定を復元（デフォルトは無効）
-  const blurEnabled = localStorage.getItem(LS_KEYS.BLUR_EFFECT_ENABLED) === 'true';
-  updateBlurEffect(blurEnabled);
-  
-  toggleBlurEffectBtn.addEventListener('change', (e) => {
-    const newState = e.target.checked;
-    updateBlurEffect(newState);
-  });
-}
 
 // アニメーション効果無効化の設定
 const toggleDisableAnimationsBtn = document.getElementById('toggle_disable_animations');
